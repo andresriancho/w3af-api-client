@@ -23,9 +23,10 @@ api_logger = logging.getLogger(__name__)
 
 class Connection(object):
 
-    def __init__(self, api_url, verbose=False):
+    def __init__(self, api_url, verbose=False, timeout=5):
         self.api_url = api_url
         self.session = None
+        self.timeout = timeout
 
         self.set_verbose(verbose)
         self.configure_requests()
@@ -83,14 +84,15 @@ class Connection(object):
         full_url = urlparse.urljoin(self.api_url, path)
 
         if method == 'GET':
-            response = self.session.get(full_url)
+            response = self.session.get(full_url, timeout=self.timeout)
 
         elif method == 'DELETE':
-            response = self.session.delete(full_url)
+            response = self.session.delete(full_url, timeout=self.timeout)
 
         elif method == 'POST':
             data = json.dumps(json_data)
-            response = self.session.post(full_url, data=data)
+            response = self.session.post(full_url, data=data,
+                                         timeout=self.timeout)
 
         else:
             raise ValueError('Invalid HTTP method: "%s"' % method)
