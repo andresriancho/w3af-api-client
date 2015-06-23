@@ -3,7 +3,7 @@ REST API client for w3af
 
 Launch web application security scans using `w3af's REST API <http://docs.w3af.org/en/latest/api/index.html>`_
 
-.. image:: https://circleci.com/gh/andresriancho/w3af-api-client.png?circle-token=5317e457dceef210130d20e0452eff7abf1d195b
+.. image:: https://circleci.com/gh/andresriancho/w3af-api-client.svg?style=svg
    :alt: Build Status
    :align: right
    :target: https://circleci.com/gh/andresriancho/w3af-api-client
