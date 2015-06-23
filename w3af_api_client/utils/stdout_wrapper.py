@@ -16,5 +16,8 @@ class CleanUpWrapper(object):
                       data)
         old_stdout.write(data)
 
+    def flush(self):
+        old_stdout.flush()
+
 
 sys.stdout = CleanUpWrapper()
