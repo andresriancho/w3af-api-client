@@ -16,7 +16,7 @@ class TestW3afIntegration(unittest.TestCase):
         The main goal of this test is to assert that the latest version of w3af
         can be consumed using the latest version of w3af-api-client.
         """
-        conn = Connection(self.W3AF_API_URL, verbose=True)
+        conn = Connection(self.W3AF_API_URL, verbose=False)
         print('Created REST API connection')
 
         target_urls = [self.TARGET_URL_FMT % self.get_network_address()]
@@ -30,7 +30,7 @@ class TestW3afIntegration(unittest.TestCase):
         self.wait_until_running(scan)
         print('Scan is running')
 
-        self.wait_until_finish(scan)
+        self.wait_until_finish(scan, wait_loops=300)
         print('Scan has finished')
 
         log = scan.get_log()
@@ -83,7 +83,7 @@ class TestW3afIntegration(unittest.TestCase):
             time.sleep(0.5)
 
             status = scan.get_status()
-            if status['items'][0]['status'] != 'Stopped':
+            if status['is_running'] == True:
                 return
 
         raise RuntimeError('Timeout waiting for scan to run')
@@ -97,7 +97,7 @@ class TestW3afIntegration(unittest.TestCase):
             time.sleep(0.5)
 
             status = scan.get_status()
-            if status['items'][0]['status'] != 'Running':
+            if status['is_running'] == False:
                 return
 
-        raise RuntimeError('Timeout waiting for scan to run')
+        raise RuntimeError('Timeout waiting for scan to finish')
