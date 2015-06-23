@@ -3,8 +3,8 @@
 set -e
 
 echo "[server-login]" > ~/.pypirc
-echo "username:" $PYPI_USER >> ~/.pypirc
-echo "password:" $PYPI_PASSWORD >> ~/.pypirc
+echo "username:" ${PYPI_USER} >> ~/.pypirc
+echo "password:" ${PYPI_PASSWORD} >> ~/.pypirc
 
 PACKAGE_URL='https://pypi.python.org/packages/source/w/w3af-api-client/'
 

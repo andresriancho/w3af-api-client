@@ -32,8 +32,8 @@ The REST API client allows you to run scans and access results and log files.
     scan_profile = file('/path/to/profile.pw3af').read()
     target_urls = ['http://example.target']
 
-    scan = Scan(conn, scan_profile, target_urls)
-    scan.start()
+    scan = Scan(conn)
+    scan.start(scan_profile, target_urls)
 
     # Wait some time for the scan to start and then
     print scan.get_log()

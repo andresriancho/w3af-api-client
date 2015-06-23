@@ -1,4 +1,5 @@
 import requests
+import urlparse
 import logging
 import json
 
@@ -78,16 +79,18 @@ class Connection(object):
                    'User-Agent': 'REST API Client %s' % __VERSION__}
         self.session.headers.update(headers)
 
-    def send_request(self, url, json_data=None, method='GET'):
+    def send_request(self, path, json_data=None, method='GET'):
+        full_url = urlparse.urljoin(self.api_url, path)
+
         if method == 'GET':
-            response = self.session.get(url)
+            response = self.session.get(full_url)
 
         elif method == 'DELETE':
-            response = self.session.delete(url)
+            response = self.session.delete(full_url)
 
         elif method == 'POST':
             data = json.dumps(json_data)
-            response = self.session.post(url, data=data)
+            response = self.session.post(full_url, data=data)
 
         else:
             raise ValueError('Invalid HTTP method: "%s"' % method)
@@ -103,5 +106,18 @@ class Connection(object):
         pretty_json = json.dumps(json_data, indent=4)
         msg = 'Received %s HTTP response from the wire:\n%s'
         api_logger.debug(msg % (response.status_code, pretty_json))
+
+        #
+        # Error handling
+        #
+        if response.status_code in (400, 403, 404):
+            error = json_data.get('error', None)
+            if error is not None:
+                raise APIException(error)
+            else:
+                msg = ('REST API service did not return the expected "error"'
+                       ' attribute for the %s response. Please create a new'
+                       ' issue in the w3af framework repository at %s')
+                raise APIException(msg % (response.status_code, ISSUE_URL))
 
         return response.status_code, json_data
