@@ -44,8 +44,8 @@ Source code
 
 Developers love code, here's all you need to understand, use and extend the client:
 
- * `w3af's REST API server <https://github.com/andresriancho/w3af/tree/master/w3af/core/ui/api/>`_
- * `w3af's REST API client <https://github.com/andresriancho/w3af-api-client/>`_
+* `w3af's REST API server <https://github.com/andresriancho/w3af/tree/master/w3af/core/ui/api/>`_
+* `w3af's REST API client <https://github.com/andresriancho/w3af-api-client/>`_
 
 Reporting bugs
 ==============
