@@ -16,7 +16,7 @@ class TestW3afIntegration(unittest.TestCase):
         The main goal of this test is to assert that the latest version of w3af
         can be consumed using the latest version of w3af-api-client.
         """
-        conn = Connection(self.W3AF_API_URL)
+        conn = Connection(self.W3AF_API_URL, verbose=True)
         print('Created REST API connection')
 
         target_urls = [self.TARGET_URL_FMT % self.get_network_address()]
