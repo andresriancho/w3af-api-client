@@ -1,0 +1,13 @@
+test:
+  override:
+
+    - "pylint --msg-template='{msg_id}:{line:3d},{column}: {obj}: {msg}' -E `ls -d */`"
+
+    - nosetests -v w3af_api_client
+    - nosetests -v -s ci
+
+deployment:
+  pypi:
+    branch: master
+    commands:
+      - ci/pypi-deploy.sh
