@@ -33,7 +33,8 @@ class Scan(object):
                                             method='GET')
 
         if code != 200:
-            raise APIException('Failed to retrieve scan status')
+            raise APIException('Failed to retrieve scan status. Received HTTP'
+                               ' response code %s' % code)
 
         return data
 
