@@ -22,7 +22,7 @@ dependencies:
     - "docker run -p 8000:8000 andresriancho/django-moth":
         background: true
 
-    - "docker run -p 5000:5000 andresriancho/w3af:unstable /home/w3af/w3af/w3af_api":
+    - "docker run -p 5000:5000 andresriancho/w3af:unstable /home/w3af/w3af/w3af_api 0.0.0.0:5000":
         background: true
 
     # Wait for background processes to start
