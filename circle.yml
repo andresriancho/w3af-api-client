@@ -15,8 +15,8 @@ dependencies:
 
     # The w3af_api is run inside docker
     - if [[ -e ~/docker/w3af.tar ]]; then docker load -i ~/docker/w3af.tar; fi
-    - docker pull andresriancho/w3af
-    - mkdir -p ~/docker; docker save andresriancho/w3af > ~/docker/w3af.tar
+    - docker pull andresriancho/w3af:unstable
+    - mkdir -p ~/docker; docker save andresriancho/w3af:unstable > ~/docker/w3af.tar
 
     # https://circleci.com/docs/background-process
     - "docker run -p 8000:8000 andresriancho/django-moth":
