@@ -17,6 +17,10 @@ class Finding(object):
         :param attribute_name: The name of the attribute to access
         :return: The value of that attribute according to the REST API
         """
+        # Avoid recursion with cached_property
+        if attribute_name == '_cache':
+            raise AttributeError()
+
         try:
             return self.finding_data.get(attribute_name)
         except KeyError:
