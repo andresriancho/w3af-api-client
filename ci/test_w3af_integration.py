@@ -17,16 +17,21 @@ class TestW3afIntegration(unittest.TestCase):
         can be consumed using the latest version of w3af-api-client.
         """
         conn = Connection(self.W3AF_API_URL)
+        print('Created REST API connection')
 
         target_urls = [self.TARGET_URL_FMT % self.get_network_address()]
 
         scan = Scan(conn)
         scan.start(FAST_TEST_PROFILE, target_urls)
+        print('Scan started')
 
         # Wait some time for the scan to finish, these wait methods also assert
         # that I'm able to retrieve the scan status
         self.wait_until_running(scan)
+        print('Scan is running')
+
         self.wait_until_finish(scan)
+        print('Scan has finished')
 
         log = scan.get_log()
         self.assertIsInstance(log, Log)
@@ -38,10 +43,14 @@ class TestW3afIntegration(unittest.TestCase):
             self.assertIsNotNone(log_entry.message)
             log_entry_count += 1
 
+            if log_entry_count % 20 == 0:
+                print('Read 20 log entries')
+
         self.assertGreater(log_entry_count, 100)
 
         findings_list = scan.get_findings()
         self.assertGreaterEqual(len(findings_list), 4)
+        print('Got %s findings' % len(findings_list))
 
         finding = findings_list[0]
         self.assertIsInstance(finding, Finding)
