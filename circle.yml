@@ -1,10 +1,43 @@
+machine:
+  services:
+    - docker
+
+dependencies:
+  cache_directories:
+    # Cache the directory to avoid delays in downloading the source each time
+    - "~/docker"
+
+  pre:
+    # And we want to start the django-moth docker instance
+    - if [[ -e ~/docker/moth.tar ]]; then docker load -i ~/docker/moth.tar; fi
+    - docker pull andresriancho/django-moth
+    - mkdir -p ~/docker; docker save andresriancho/django-moth > ~/docker/moth.tar
+
+    # The w3af_api is run inside docker
+    - if [[ -e ~/docker/w3af.tar ]]; then docker load -i ~/docker/w3af.tar; fi
+    - docker pull andresriancho/w3af
+    - mkdir -p ~/docker; docker save andresriancho/w3af > ~/docker/w3af.tar
+
+    # https://circleci.com/docs/background-process
+    - "docker run -p 8000:8000 andresriancho/django-moth":
+        background: true
+
+    - "docker run -p 5000:5000 andresriancho/w3af:unstable /home/w3af/w3af/w3af_api":
+        background: true
+
+    # Wait for background processes to start
+    - sleep 10
+
 test:
   override:
 
+    # Analyze source code
     - "pylint --msg-template='{msg_id}:{line:3d},{column}: {obj}: {msg}' -E `ls -d */`"
 
+    # Run tests
     - nosetests -v w3af_api_client
     - nosetests -v -s ci
+
 
 deployment:
   pypi:
