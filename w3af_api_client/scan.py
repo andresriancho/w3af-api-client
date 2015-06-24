@@ -60,7 +60,7 @@ class Scan(object):
         if code != 200:
             raise APIException('Failed to retrieve findings')
 
-        findings = data.get('entries', None)
+        findings = data.get('items', None)
 
         if findings is None:
             raise APIException('Failed to retrieve findings')

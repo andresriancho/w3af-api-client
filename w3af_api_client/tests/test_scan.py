@@ -42,7 +42,7 @@ LOG_RESPONSE = json.dumps({'entries': [
      'severity': 'High'},
 ]})
 
-FINDINGS_RESPONSE = json.dumps({'entries': [{'id': 0}]})
+FINDINGS_RESPONSE = json.dumps({'items': [{'id': 0}]})
 
 FINDINGS_DETAIL_RESPONSE = json.dumps({'name': 'SQL injection'})
 
