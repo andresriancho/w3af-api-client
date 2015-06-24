@@ -2,7 +2,7 @@ import json
 import unittest
 import urlparse
 import httpretty
-
+import base64
 
 from w3af_api_client.utils.exceptions import APIException
 from w3af_api_client import Connection
@@ -47,7 +47,14 @@ LOG_RESPONSE = json.dumps({'entries': [
 FINDINGS_RESPONSE = json.dumps({'items': [{'id': 0,
                                            'href': '/scans/0/kb/0'}]})
 
-FINDINGS_DETAIL_RESPONSE = json.dumps({'name': 'SQL injection'})
+FINDINGS_DETAIL_RESPONSE = json.dumps({'name': 'SQL injection',
+                                       'traffic_hrefs': ['/scans/0/traffic/45',
+                                                         '/scans/0/traffic/46']})
+
+TRAFFIC_DETAIL_RESPONSE_45 = json.dumps({'request': base64.b64encode('GET / ...'),
+                                         'response': base64.b64encode('<html>...')})
+TRAFFIC_DETAIL_RESPONSE_46 = json.dumps({'request': base64.b64encode('POST / ...'),
+                                         'response': base64.b64encode('<html>...')})
 
 
 class TestScanUsingClient(unittest.TestCase):
@@ -116,6 +123,16 @@ class TestScanUsingClient(unittest.TestCase):
                                body=FINDINGS_DETAIL_RESPONSE,
                                content_type='application/json')
 
+        httpretty.register_uri(httpretty.GET,
+                               self.get_url('/scans/0/traffic/45'),
+                               body=TRAFFIC_DETAIL_RESPONSE_45,
+                               content_type='application/json')
+
+        httpretty.register_uri(httpretty.GET,
+                               self.get_url('/scans/0/traffic/46'),
+                               body=TRAFFIC_DETAIL_RESPONSE_46,
+                               content_type='application/json')
+
         conn = Connection(self.api_url)
         #conn.set_verbose(True)
 
@@ -177,3 +194,11 @@ class TestScanUsingClient(unittest.TestCase):
         finding = findings[0]
         self.assertEqual(finding.name, 'SQL injection')
         self.assertIsInstance(finding, Finding)
+
+        all_traffic = finding.get_traffic()
+        self.assertIsInstance(all_traffic, list)
+        self.assertEqual(len(all_traffic), 2)
+
+        traffic = all_traffic[0]
+        self.assertIn('GET ', traffic.get_request())
+        self.assertIn('<html>', traffic.get_response())

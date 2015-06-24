@@ -1,5 +1,6 @@
 from w3af_api_client.utils.exceptions import APIException
 from w3af_api_client.utils.cached_property import cached_property
+from w3af_api_client.traffic import Traffic
 
 
 class Finding(object):
@@ -43,3 +44,6 @@ class Finding(object):
             raise APIException('Could not retrieve finding detail')
 
         return data
+
+    def get_traffic(self):
+        return [Traffic(self.conn, traffic_href) for traffic_href in self.traffic_hrefs]
