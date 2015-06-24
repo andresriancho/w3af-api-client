@@ -15,6 +15,8 @@ TARGET_URL = 'http://target.example/'
 
 INDEX_RESPONSE = json.dumps({'docs': 'http://docs.w3af.org/en/latest/api/index.html'})
 
+VERSION_RESPONSE = json.dumps({'version': '1.7.2'})
+
 SCAN_START_REQUEST = {'scan_profile': 'mock_profile',
                       'target_urls': [TARGET_URL]}
 SCAN_START_RESPONSE = json.dumps({u'message': u'Success',
@@ -42,7 +44,8 @@ LOG_RESPONSE = json.dumps({'entries': [
      'severity': 'High'},
 ]})
 
-FINDINGS_RESPONSE = json.dumps({'items': [{'id': 0}]})
+FINDINGS_RESPONSE = json.dumps({'items': [{'id': 0,
+                                           'href': '/scans/0/kb/0'}]})
 
 FINDINGS_DETAIL_RESPONSE = json.dumps({'name': 'SQL injection'})
 
@@ -68,6 +71,11 @@ class TestScanUsingClient(unittest.TestCase):
         httpretty.register_uri(httpretty.GET,
                                self.get_url('/'),
                                body=INDEX_RESPONSE,
+                               content_type='application/json')
+
+        httpretty.register_uri(httpretty.GET,
+                               self.get_url('/version'),
+                               body=VERSION_RESPONSE,
                                content_type='application/json')
 
         httpretty.register_uri(httpretty.POST,
@@ -99,12 +107,12 @@ class TestScanUsingClient(unittest.TestCase):
                                ])
 
         httpretty.register_uri(httpretty.GET,
-                               self.get_url('/kb/'),
+                               self.get_url('/scans/0/kb/'),
                                body=FINDINGS_RESPONSE,
                                content_type='application/json')
 
         httpretty.register_uri(httpretty.GET,
-                               self.get_url('/kb/0'),
+                               self.get_url('/scans/0/kb/0'),
                                body=FINDINGS_DETAIL_RESPONSE,
                                content_type='application/json')
 
