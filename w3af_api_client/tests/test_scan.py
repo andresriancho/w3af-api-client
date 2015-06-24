@@ -15,6 +15,8 @@ TARGET_URL = 'http://target.example/'
 
 INDEX_RESPONSE = json.dumps({'docs': 'http://docs.w3af.org/en/latest/api/index.html'})
 
+VERSION_RESPONSE = json.dumps({'version': '1.7.2'})
+
 SCAN_START_REQUEST = {'scan_profile': 'mock_profile',
                       'target_urls': [TARGET_URL]}
 SCAN_START_RESPONSE = json.dumps({u'message': u'Success',
@@ -68,6 +70,11 @@ class TestScanUsingClient(unittest.TestCase):
         httpretty.register_uri(httpretty.GET,
                                self.get_url('/'),
                                body=INDEX_RESPONSE,
+                               content_type='application/json')
+
+        httpretty.register_uri(httpretty.GET,
+                               self.get_url('/version'),
+                               body=VERSION_RESPONSE,
                                content_type='application/json')
 
         httpretty.register_uri(httpretty.POST,

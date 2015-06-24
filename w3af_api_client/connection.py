@@ -37,16 +37,30 @@ class Connection(object):
         :return: True when we can access the REST API
         """
         try:
-            code, _ = self.send_request(self.api_url)
+            version_dict = self.get_version()
         except Exception, e:
             msg = 'An exception was raised when connecting to REST API: "%s"'
             raise APIException(msg % e)
         else:
-            if code in (200, 404):
+            """
+            This is an example response from the REST API
+            {
+                "branch": "develop",
+                "dirty": "Yes",
+                "revision": "f1cae98161 - 24 Jun 2015 16:29",
+                "version": "1.7.2"
+            }
+            """
+            if 'version' in version_dict:
+                # Yup, this looks like a w3af REST API
                 return True
 
-            msg = 'Unexpected HTTP response code %s when connecting to REST API'
-            raise APIException(msg % code)
+            msg = 'Unexpected HTTP response when connecting to REST API'
+            raise APIException(msg)
+
+    def get_version(self):
+        code, version_dict = self.send_request('/version')
+        return version_dict
 
     def set_verbose(self, verbose):
         # Get level based on verbose boolean
