@@ -55,7 +55,8 @@ class Scan(object):
         return Log(conn=self.conn, scan_id=self.scan_id)
 
     def get_findings(self):
-        code, data = self.conn.send_request('/kb/', method='GET')
+        code, data = self.conn.send_request('/scans/%s/kb/' % self.scan_id,
+                                            method='GET')
 
         if code != 200:
             raise APIException('Failed to retrieve findings')
@@ -65,4 +66,4 @@ class Scan(object):
         if findings is None:
             raise APIException('Failed to retrieve findings')
 
-        return [Finding(self.conn, f['id']) for f in findings]
+        return [Finding(self.conn, f['href']) for f in findings]

@@ -1,5 +1,6 @@
 from w3af_api_client.utils.exceptions import APIException
 from w3af_api_client.utils.cached_property import cached_property
+from w3af_api_client.traffic import Traffic
 
 
 class Finding(object):
@@ -8,9 +9,9 @@ class Finding(object):
     one of the attributes is accessed it will connect to the REST API and
     retrieve the information
     """
-    def __init__(self, conn, finding_id):
+    def __init__(self, conn, finding_href):
         self.conn = conn
-        self.finding_id = finding_id
+        self.finding_href = finding_href
 
     def __getattr__(self, attribute_name):
         """
@@ -37,10 +38,12 @@ class Finding(object):
 
         :return: The JSON data
         """
-        code, data = self.conn.send_request('/kb/%s' % self.finding_id,
-                                            method='GET')
+        code, data = self.conn.send_request(self.finding_href, method='GET')
 
         if code != 200:
             raise APIException('Could not retrieve finding detail')
 
         return data
+
+    def get_traffic(self):
+        return [Traffic(self.conn, traffic_href) for traffic_href in self.traffic_hrefs]
