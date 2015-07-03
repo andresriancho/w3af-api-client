@@ -2,7 +2,7 @@ from collections import namedtuple
 from w3af_api_client.utils.exceptions import APIException
 
 
-LogEntry = namedtuple('LogEntry', ['type', 'message', 'time', 'severity'])
+LogEntry = namedtuple('LogEntry', ['type', 'message', 'time', 'severity', 'id'])
 
 
 class Log(object):
@@ -21,7 +21,35 @@ class Log(object):
     def __iter__(self):
         return log_entry_generator(self)
 
+    def get_by_start_id(self, start_id):
+        """
+        :yield: Log entries starting from :start_id: and ending 200 entries
+                after. In most cases easier to call than the paginate one
+                because there is no need to keep track of the already read
+                entries in a specific page.
+        """
+        url = '/scans/%s/log?id=%s' % (self.scan_id, start_id)
+        code, page = self.conn.send_request(url, method='GET')
+
+        if code != 200:
+            raise APIException('Could not retrieve log entry list')
+
+        entries = page.get('entries', None)
+
+        if entries is None:
+            raise APIException('Could not retrieve log entries attribute')
+
+        for entry_dict in entries:
+            yield LogEntry(entry_dict['type'],
+                           entry_dict['message'],
+                           entry_dict['time'],
+                           entry_dict['severity'],
+                           entry_dict['id'])
+
     def get_page(self, page_number):
+        """
+        :yield: Log entries for the given page number
+        """
         url = '/scans/%s/log?page=%s' % (self.scan_id, page_number)
         code, page = self.conn.send_request(url, method='GET')
 
@@ -37,7 +65,8 @@ class Log(object):
             yield LogEntry(entry_dict['type'],
                            entry_dict['message'],
                            entry_dict['time'],
-                           entry_dict['severity'])
+                           entry_dict['severity'],
+                           entry_dict['id'])
 
 
 def log_entry_generator(log_instance):

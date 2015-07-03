@@ -37,11 +37,13 @@ LOG_RESPONSE = json.dumps({'entries': [
     {'type': 'debug',
      'message': 'one',
      'time': '23-Jun-2015 16:21',
-     'severity': None},
+     'severity': None,
+     'id': 0},
     {'type': 'vulnerability',
      'message': 'two',
      'time': '23-Jun-2015 16:22',
-     'severity': 'High'},
+     'severity': 'High',
+     'id': 1},
 ]})
 
 FINDINGS_RESPONSE = json.dumps({'items': [{'id': 0,
@@ -105,6 +107,18 @@ class TestScanUsingClient(unittest.TestCase):
         httpretty.register_uri(httpretty.GET,
                                self.get_url('/scans/0/log'),
                                responses=[
+                                   #
+                                   #    Responses for ?page pagination
+                                   #
+                                   httpretty.Response(body=LOG_RESPONSE,
+                                                      content_type='application/json',
+                                                      status=200),
+                                   httpretty.Response(body=EMPTY_LOG_RESPONSE,
+                                                      content_type='application/json',
+                                                      status=200),
+                                   #
+                                   #    Responses for ?id=0 pagination
+                                   #
                                    httpretty.Response(body=LOG_RESPONSE,
                                                       content_type='application/json',
                                                       status=200),
@@ -173,12 +187,30 @@ class TestScanUsingClient(unittest.TestCase):
         self.assertIsInstance(log, Log)
 
         expected_log_entries = [LogEntry('debug', 'one',
-                                         '23-Jun-2015 16:21', None),
+                                         '23-Jun-2015 16:21', None, 0),
                                 LogEntry('vulnerability', 'two',
-                                         '23-Jun-2015 16:22', 'High')]
+                                         '23-Jun-2015 16:22', 'High', 1)]
         received_log_entries = []
 
         for log_entry in log:
+            self.assertIsInstance(log_entry, LogEntry)
+            received_log_entries.append(log_entry)
+
+        self.assertEqual(received_log_entries, expected_log_entries)
+
+        #
+        #   Get the log using the ids
+        #
+        log = scan.get_log()
+        self.assertIsInstance(log, Log)
+
+        expected_log_entries = [LogEntry('debug', 'one',
+                                         '23-Jun-2015 16:21', None, 0),
+                                LogEntry('vulnerability', 'two',
+                                         '23-Jun-2015 16:22', 'High', 1)]
+        received_log_entries = []
+
+        for log_entry in log.get_by_start_id(0):
             self.assertIsInstance(log_entry, LogEntry)
             received_log_entries.append(log_entry)
 
