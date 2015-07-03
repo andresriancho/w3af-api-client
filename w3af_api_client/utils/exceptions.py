@@ -4,3 +4,7 @@ class APIException(Exception):
 
 class ClientException(Exception):
     pass
+
+
+class ScanStopTimeoutException(Exception):
+    pass
