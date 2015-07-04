@@ -4,9 +4,8 @@ import urlparse
 import httpretty
 
 from w3af_api_client import Connection, Scan
+from w3af_api_client.tests.test_scan import INDEX_RESPONSE, VERSION_RESPONSE
 
-
-INDEX_RESPONSE = json.dumps({'docs': 'http://docs.w3af.org/en/latest/api/index.html'})
 
 EXCEPTION_LIST_RESPONSE = json.dumps({'items': [{'id': 0,
                                                  'href': '/scans/0/exceptions/0',
@@ -58,6 +57,11 @@ class TestExceptionListClient(unittest.TestCase):
         httpretty.register_uri(httpretty.GET,
                                self.get_url('/'),
                                body=INDEX_RESPONSE,
+                               content_type='application/json')
+
+        httpretty.register_uri(httpretty.GET,
+                               self.get_url('/version'),
+                               body=VERSION_RESPONSE,
                                content_type='application/json')
 
         httpretty.register_uri(httpretty.GET,
