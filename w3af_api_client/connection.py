@@ -118,8 +118,8 @@ class Connection(object):
         except ValueError:
             msg = ('REST API service did not return JSON, if this issue'
                    ' persists please create an issue in the w3af framework'
-                   ' repository at %s')
-            raise APIException(msg % ISSUE_URL)
+                   ' repository at %s. The response body starts with: "%s"')
+            raise APIException(msg % (ISSUE_URL, response.content[:20]))
 
         pretty_json = json.dumps(json_data, indent=4)
         msg = 'Received %s HTTP response from the wire:\n%s'
