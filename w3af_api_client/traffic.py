@@ -24,3 +24,6 @@ class Traffic(object):
 
     def get_response(self):
         return self.response
+
+    def __repr__(self):
+        return '<Finding for href="%s">' % self.traffic_href

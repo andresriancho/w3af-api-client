@@ -119,3 +119,6 @@ class Scan(object):
             raise APIException('Failed to retrieve exceptions')
 
         return [ScannerException(self.conn, e['href']) for e in exceptions]
+
+    def __repr__(self):
+        return '<Scan with ID "%s">' % self.scan_id

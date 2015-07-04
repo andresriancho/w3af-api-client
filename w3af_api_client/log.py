@@ -68,6 +68,9 @@ class Log(object):
                            entry_dict['severity'],
                            entry_dict['id'])
 
+    def __repr__(self):
+        return '<Log manager for scan ID "%s">' % self.scan_id
+
 
 def log_entry_generator(log_instance):
     """

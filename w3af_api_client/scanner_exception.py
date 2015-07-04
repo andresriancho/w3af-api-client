@@ -9,3 +9,6 @@ class ScannerException(Details):
     """
     def __init__(self, conn, exception_href):
         super(ScannerException, self).__init__(conn, exception_href)
+
+    def __repr__(self):
+        return '<ScannerException for href="%s">' % self.resource_href

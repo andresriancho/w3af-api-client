@@ -13,3 +13,6 @@ class Finding(Details):
 
     def get_traffic(self):
         return [Traffic(self.conn, traffic_href) for traffic_href in self.traffic_hrefs]
+
+    def __repr__(self):
+        return '<Finding for href="%s">' % self.resource_href

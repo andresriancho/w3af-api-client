@@ -149,3 +149,6 @@ class Connection(object):
             scan_instances.append(scan)
 
         return scan_instances
+
+    def __repr__(self):
+        return '<Connection for API URL="%s">' % self.api_url
