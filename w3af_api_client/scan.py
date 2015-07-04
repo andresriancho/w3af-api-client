@@ -3,6 +3,7 @@ import time
 
 from w3af_api_client.log import Log
 from w3af_api_client.finding import Finding
+from w3af_api_client.scanner_exception import ScannerException
 from w3af_api_client.utils.exceptions import (APIException,
                                               ScanStopTimeoutException)
 
@@ -104,3 +105,17 @@ class Scan(object):
             raise APIException('Failed to retrieve findings')
 
         return [Finding(self.conn, f['href']) for f in findings]
+
+    def get_exceptions(self):
+        url = '/scans/%s/exceptions/' % self.scan_id
+        code, data = self.conn.send_request(url, method='GET')
+
+        if code != 200:
+            raise APIException('Failed to retrieve exceptions')
+
+        exceptions = data.get('items', None)
+
+        if exceptions is None:
+            raise APIException('Failed to retrieve exceptions')
+
+        return [ScannerException(self.conn, e['href']) for e in exceptions]
