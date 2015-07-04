@@ -1,10 +1,9 @@
 import json
-import unittest
-import urlparse
 import httpretty
 import base64
 
 from w3af_api_client.utils.exceptions import APIException
+from w3af_api_client.tests.base import BaseAPITest
 from w3af_api_client import Connection
 from w3af_api_client import LogEntry, Log
 from w3af_api_client import Scan
@@ -59,18 +58,7 @@ TRAFFIC_DETAIL_RESPONSE_46 = json.dumps({'request': base64.b64encode('POST / ...
                                          'response': base64.b64encode('<html>...')})
 
 
-class TestScanUsingClient(unittest.TestCase):
-
-    def setUp(self):
-        super(TestScanUsingClient, self).setUp()
-        self.api_url = 'http://127.0.0.1:5001/'
-
-    def get_url(self, path):
-        return urlparse.urljoin(self.api_url, path)
-
-    def assertJSONEquals(self, request, expected_json):
-        self.assertEqual(json.loads(request.body),
-                         expected_json)
+class TestScanUsingClient(BaseAPITest):
 
     @httpretty.activate
     def test_simple_scan(self):

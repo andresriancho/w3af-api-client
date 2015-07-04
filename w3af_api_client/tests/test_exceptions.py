@@ -4,6 +4,7 @@ import urlparse
 import httpretty
 
 from w3af_api_client import Connection, Scan
+from w3af_api_client.tests.base import BaseAPITest
 from w3af_api_client.tests.test_scan import INDEX_RESPONSE, VERSION_RESPONSE
 
 
@@ -43,14 +44,7 @@ EXCEPTION_DETAIL_1 = json.dumps({'id': 1,
                                  'phase': 'crawl'})
 
 
-class TestExceptionListClient(unittest.TestCase):
-
-    def setUp(self):
-        super(TestExceptionListClient, self).setUp()
-        self.api_url = 'http://127.0.0.1:5001/'
-
-    def get_url(self, path):
-        return urlparse.urljoin(self.api_url, path)
+class TestExceptionListClient(BaseAPITest):
 
     @httpretty.activate
     def test_exception_list(self):

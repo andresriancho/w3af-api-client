@@ -1,9 +1,8 @@
 import json
-import unittest
-import urlparse
 import httpretty
 
 from w3af_api_client import Connection
+from w3af_api_client.tests.base import BaseAPITest
 from w3af_api_client.tests.test_scan import INDEX_RESPONSE, VERSION_RESPONSE
 
 
@@ -21,18 +20,7 @@ SCAN_LIST_RESPONSE = json.dumps({'items': [{'id': 0,
                                            ]})
 
 
-class TestScanStopDeleteClient(unittest.TestCase):
-
-    def setUp(self):
-        super(TestScanStopDeleteClient, self).setUp()
-        self.api_url = 'http://127.0.0.1:5001/'
-
-    def get_url(self, path):
-        return urlparse.urljoin(self.api_url, path)
-
-    def assertJSONEquals(self, request, expected_json):
-        self.assertEqual(json.loads(request.body),
-                         expected_json)
+class TestScanStopDeleteClient(BaseAPITest):
 
     @httpretty.activate
     def test_scan_list(self):
