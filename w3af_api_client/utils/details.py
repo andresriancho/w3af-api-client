@@ -23,7 +23,7 @@ class Details(object):
         :return: The value of that attribute according to the REST API
         """
         try:
-            return self.resource_data.get(attribute_name)
+            return self.resource_data[attribute_name]
         except KeyError:
             # This will raise a KeyError, but we want an attribute error to
             # keep the expected "protocol" when doing instance.attribute
