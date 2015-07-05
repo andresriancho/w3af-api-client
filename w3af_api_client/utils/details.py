@@ -11,6 +11,9 @@ class Details(object):
         self.resource_href = resource_href
         self._data = None
 
+    def __eq__(self, other):
+        return self._data == other._data
+
     def __getattr__(self, attribute_name):
         """
         :param attribute_name: The name of the attribute to access
