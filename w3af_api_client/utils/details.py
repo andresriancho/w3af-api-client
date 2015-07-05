@@ -1,5 +1,4 @@
 from w3af_api_client.utils.exceptions import APIException
-from w3af_api_client.utils.cached_property import cached_property
 
 
 class Details(object):
@@ -10,16 +9,13 @@ class Details(object):
     def __init__(self, conn, resource_href):
         self.conn = conn
         self.resource_href = resource_href
+        self._data = None
 
     def __getattr__(self, attribute_name):
         """
         :param attribute_name: The name of the attribute to access
         :return: The value of that attribute according to the REST API
         """
-        # Avoid recursion with cached_property
-        if attribute_name == '_cache':
-            raise AttributeError()
-
         try:
             return self.resource_data.get(attribute_name)
         except KeyError:
@@ -28,7 +24,7 @@ class Details(object):
             msg = "Resource detail has no attribute '%s'"
             raise AttributeError(msg % attribute_name)
 
-    @cached_property(2)
+    @property
     def resource_data(self):
         """
         Cached access to the KB so a piece of code that accesses this finding
@@ -36,10 +32,17 @@ class Details(object):
 
         :return: The JSON data
         """
+        if self._data is not None:
+            return self._data
+
+        return self.update()
+
+    def update(self):
         code, data = self.conn.send_request(self.resource_href, method='GET')
 
         if code != 200:
             msg = 'Could not retrieve resource detail "%s"'
             raise APIException(msg % self.resource_href)
 
-        return data
+        self._data = data
+        return self._data

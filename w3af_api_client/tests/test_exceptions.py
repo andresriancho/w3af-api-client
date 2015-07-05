@@ -84,3 +84,12 @@ class TestExceptionListClient(BaseAPITest):
 
         self.assertEqual(exception_0.exception, 'ValueError')
         self.assertEqual(exception_1.exception, 'IndexError')
+
+        # Check that update works
+        self.assertIsNotNone(exception_0._data)
+
+        exception_0._data = None
+        exception_0.update()
+
+        self.assertIsNotNone(exception_0._data)
+        self.assertEqual(exception_0._data['exception'], 'ValueError')

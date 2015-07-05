@@ -1,4 +1,4 @@
-__VERSION__ = '1.0.7'
+__VERSION__ = '1.0.8'
 
 try:
     from .connection import Connection
