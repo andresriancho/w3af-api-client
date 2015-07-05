@@ -25,8 +25,9 @@ The REST API client allows you to run scans and access results and log files.
 
     from w3af_api_client import Connection, Scan
 
-    # Connect to the REST API
+    # Connect to the REST API and get it's version
     conn = Connection('http://127.0.0.1:5000/')
+    print conn.get_version()
 
     # Define the target and configuration
     scan_profile = file('/path/to/profile.pw3af').read()
@@ -36,8 +37,10 @@ The REST API client allows you to run scans and access results and log files.
     scan.start(scan_profile, target_urls)
 
     # Wait some time for the scan to start and then
-    print scan.get_log()
-    print scan.get_findings()
+    scan.get_urls()
+    scan.get_log()
+    scan.get_findings()
+
 
 Source code
 ===========

@@ -1,6 +1,4 @@
 import json
-import unittest
-import urlparse
 import httpretty
 
 from w3af_api_client import Connection, Scan

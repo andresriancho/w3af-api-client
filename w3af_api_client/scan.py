@@ -1,5 +1,6 @@
-import logging
 import time
+import base64
+import logging
 
 from w3af_api_client.log import Log
 from w3af_api_client.finding import Finding
@@ -119,6 +120,34 @@ class Scan(object):
             raise APIException('Failed to retrieve exceptions')
 
         return [ScannerException(self.conn, e['href']) for e in exceptions]
+
+    def get_urls(self):
+        url = '/scans/%s/urls/' % self.scan_id
+        code, data = self.conn.send_request(url, method='GET')
+
+        if code != 200:
+            raise APIException('Failed to retrieve urls')
+
+        urls = data.get('items', None)
+
+        if urls is None:
+            raise APIException('Failed to retrieve urls')
+
+        return urls
+
+    def get_fuzzable_requests(self):
+        url = '/scans/%s/fuzzable-requests/' % self.scan_id
+        code, data = self.conn.send_request(url, method='GET')
+
+        if code != 200:
+            raise APIException('Failed to retrieve fuzzable requests')
+
+        encoded_fuzzable_requests = data.get('items', None)
+
+        if encoded_fuzzable_requests is None:
+            raise APIException('Failed to retrieve fuzzable requests')
+
+        return [base64.b64decode(fr) for fr in encoded_fuzzable_requests]
 
     def __repr__(self):
         return '<Scan with ID "%s">' % self.scan_id
