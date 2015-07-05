@@ -33,7 +33,7 @@ class MockFinding(Finding):
                               '/scans/0/traffic/42']}
 
     def __init__(self):
-        super(Finding, self).__init__(None, '/scans/0/kb/0')
+        super(MockFinding, self).__init__(None, '/scans/0/kb/0')
         self.update()
 
     def get_traffic(self):
