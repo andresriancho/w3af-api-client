@@ -33,12 +33,14 @@ class MockFinding(Finding):
                               '/scans/0/traffic/42']}
 
     def __init__(self):
-        super(Finding, self).__init__(None, None)
+        super(Finding, self).__init__(None, '/scans/0/kb/0')
+        self.update()
 
     def get_traffic(self):
         return [MockTraffic(self.conn, traffic_href) for traffic_href in self.traffic_hrefs]
 
     def update(self):
+        self._data = self.DATA
         return self.DATA
 
 
