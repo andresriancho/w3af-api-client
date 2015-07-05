@@ -26,4 +26,8 @@ class Traffic(object):
         return self.response
 
     def __repr__(self):
-        return '<Finding for href="%s">' % self.traffic_href
+        return '<Traffic for href="%s">' % self.traffic_href
+
+    def __eq__(self, other):
+        return (self.request == other.request and
+                self.response == other.response)

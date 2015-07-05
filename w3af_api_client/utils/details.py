@@ -11,8 +11,11 @@ class Details(object):
         self.resource_href = resource_href
         self._data = None
 
+    def get_data(self):
+        return self._data
+
     def __eq__(self, other):
-        return self._data == other._data
+        return self.get_data() == other.get_data()
 
     def __getattr__(self, attribute_name):
         """
