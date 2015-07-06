@@ -129,11 +129,11 @@ class Connection(object):
         # Error handling
         #
         if response.status_code in (400, 403, 404):
-            error = json_data.get('error', None)
+            error = json_data.get('message', None)
             if error is not None:
                 raise APIException(error)
             else:
-                msg = ('REST API service did not return the expected "error"'
+                msg = ('REST API service did not return the expected "message"'
                        ' attribute for the %s response. Please create a new'
                        ' issue in the w3af framework repository at %s')
                 raise APIException(msg % (response.status_code, ISSUE_URL))

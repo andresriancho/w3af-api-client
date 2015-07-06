@@ -40,7 +40,7 @@ class MockFinding(Finding):
         return [MockTraffic(self.conn, traffic_href) for traffic_href in self.traffic_hrefs]
 
     def update(self):
-        self._data = self.DATA
+        self._data = self.DATA.copy()
         return self.DATA
 
 
