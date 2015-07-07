@@ -135,8 +135,11 @@ class Connection(object):
             else:
                 msg = ('REST API service did not return the expected "message"'
                        ' attribute for the %s response. Please create a new'
-                       ' issue in the w3af framework repository at %s')
-                raise APIException(msg % (response.status_code, ISSUE_URL))
+                       ' issue in the w3af framework repository at %s with'
+                       ' this JSON data:\n\n%s')
+                dump = json.dumps(json_data, indent=4)
+                args = (response.status_code, ISSUE_URL, dump)
+                raise APIException(msg % args)
 
         return response.status_code, json_data
 
