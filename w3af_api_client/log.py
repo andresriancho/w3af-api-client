@@ -1,3 +1,5 @@
+import json
+
 from collections import namedtuple
 from w3af_api_client.utils.exceptions import APIException
 
