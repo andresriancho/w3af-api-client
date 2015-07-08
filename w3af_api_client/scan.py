@@ -39,8 +39,10 @@ class Scan(object):
                                             method='GET')
 
         if code != 200:
+            message = data.get('message', 'None')
+            args = (code, message)
             raise APIException('Failed to retrieve scan status. Received HTTP'
-                               ' response code %s' % code)
+                               ' response code %s. Message: "%s"' % args)
 
         return data
 
