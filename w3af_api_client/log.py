@@ -40,11 +40,21 @@ class Log(object):
             raise APIException('Could not retrieve log entries attribute')
 
         for entry_dict in entries:
-            yield LogEntry(entry_dict['type'],
-                           entry_dict['message'],
-                           entry_dict['time'],
-                           entry_dict['severity'],
-                           entry_dict['id'])
+
+            # Debug helper
+            # https://circleci.com/gh/andresriancho/w3af-api-docker/30
+            try:
+                _type = entry_dict['type']
+                _id = entry_dict['id']
+                message = entry_dict['message']
+                time = entry_dict['time']
+                severity = entry_dict['severity']
+            except KeyError:
+                msg = ('Missing expected log entry attribute. Log entry'
+                       ' object is:\n\n%s')
+                raise APIException(msg % json.dumps(entry_dict, indent=4))
+
+            yield LogEntry(_type, message, time, severity, _id)
 
     def get_page(self, page_number):
         """
