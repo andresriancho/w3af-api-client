@@ -1,10 +1,38 @@
 import json
 
-from collections import namedtuple
 from w3af_api_client.utils.exceptions import APIException
 
 
-LogEntry = namedtuple('LogEntry', ['type', 'message', 'time', 'severity', 'id'])
+class LogEntry(object):
+    def __init__(self, _type, message, _time, severity, _id):
+        self.type = _type
+        self.message = message
+        self.time = _time
+        self.severity = severity
+        self.id = _id
+
+    @classmethod
+    def from_entry_dict(cls, entry_dict):
+        """
+        This is a "constructor" for the LogEntry class.
+
+        :param entry_dict: A dict we get from the REST API
+        :return: An instance of LogEntry.
+        """
+        # Debug helper
+        # https://circleci.com/gh/andresriancho/w3af-api-docker/30
+        try:
+            _type = entry_dict['type']
+            _id = entry_dict['id']
+            _time = entry_dict['time']
+            message = entry_dict['message']
+            severity = entry_dict['severity']
+        except KeyError:
+            msg = ('Missing expected log entry attribute. Log entry'
+                   ' object is:\n\n%s')
+            raise APIException(msg % json.dumps(entry_dict, indent=4))
+
+        return cls(_type, message, _time, severity, _id)
 
 
 class Log(object):
@@ -42,21 +70,7 @@ class Log(object):
             raise APIException('Could not retrieve log entries attribute')
 
         for entry_dict in entries:
-
-            # Debug helper
-            # https://circleci.com/gh/andresriancho/w3af-api-docker/30
-            try:
-                _type = entry_dict['type']
-                _id = entry_dict['id']
-                message = entry_dict['message']
-                time = entry_dict['time']
-                severity = entry_dict['severity']
-            except KeyError:
-                msg = ('Missing expected log entry attribute. Log entry'
-                       ' object is:\n\n%s')
-                raise APIException(msg % json.dumps(entry_dict, indent=4))
-
-            yield LogEntry(_type, message, time, severity, _id)
+            yield LogEntry.from_entry_dict(entry_dict)
 
     def get_page(self, page_number):
         """
@@ -74,11 +88,7 @@ class Log(object):
             raise APIException('Could not retrieve log entries attribute')
 
         for entry_dict in entries:
-            yield LogEntry(entry_dict['type'],
-                           entry_dict['message'],
-                           entry_dict['time'],
-                           entry_dict['severity'],
-                           entry_dict['id'])
+            yield LogEntry.from_entry_dict(entry_dict)
 
     def __repr__(self):
         return '<Log manager for scan ID "%s">' % self.scan_id
