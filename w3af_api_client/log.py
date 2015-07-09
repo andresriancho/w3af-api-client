@@ -11,6 +11,13 @@ class LogEntry(object):
         self.severity = severity
         self.id = _id
 
+    def __eq__(self, other):
+        return (self.type == other.type and
+                self.message == other.message and
+                self.time == other.time and
+                self.severity == other.severity and
+                self.id == other.id)
+
     @classmethod
     def from_entry_dict(cls, entry_dict):
         """
