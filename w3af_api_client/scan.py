@@ -27,7 +27,10 @@ class Scan(object):
                                             method='POST')
 
         if code != 201:
-            raise APIException('Failed to start the new scan')
+            message = data.get('message', 'None')
+            args = (code, message)
+            raise APIException('Failed to start the new scan. Received HTTP'
+                               ' response code %s. Message: "%s"' % args)
 
         api_logger.debug('Scan successfully started using REST API')
         self.scan_id = data['id']
@@ -114,7 +117,10 @@ class Scan(object):
         code, data = self.conn.send_request(url, method='GET')
 
         if code != 200:
-            raise APIException('Failed to retrieve exceptions')
+            message = data.get('message', 'None')
+            args = (code, message)
+            raise APIException('Failed to retrieve exceptions. Received HTTP'
+                               ' response code %s. Message: "%s"' % args)
 
         exceptions = data.get('items', None)
 
