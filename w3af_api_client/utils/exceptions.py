@@ -8,3 +8,15 @@ class ClientException(Exception):
 
 class ScanStopTimeoutException(Exception):
     pass
+
+
+class NotFoundException(APIException):
+    pass
+
+
+class BadRequestException(APIException):
+    pass
+
+
+class ForbiddenException(APIException):
+    pass

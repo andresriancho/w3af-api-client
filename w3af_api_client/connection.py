@@ -15,12 +15,19 @@ except ImportError:
 
 
 from w3af_api_client import __VERSION__
-from w3af_api_client.utils.exceptions import APIException
 from w3af_api_client.utils.constants import ISSUE_URL
 from w3af_api_client.scan import Scan
+from w3af_api_client.utils.exceptions import (APIException,
+                                              ForbiddenException,
+                                              NotFoundException,
+                                              BadRequestException)
 
 
 api_logger = logging.getLogger(__name__)
+
+API_EXCEPTIONS = {400: BadRequestException,
+                  403: ForbiddenException,
+                  404: NotFoundException}
 
 
 class Connection(object):
@@ -128,10 +135,12 @@ class Connection(object):
         #
         # Error handling
         #
-        if response.status_code in (400, 403, 404):
+        if response.status_code in API_EXCEPTIONS:
             error = json_data.get('message', None)
+            exception_klass = API_EXCEPTIONS.get(response.status_code)
+
             if error is not None:
-                raise APIException(error)
+                raise exception_klass(error)
             else:
                 msg = ('REST API service did not return the expected "message"'
                        ' attribute for the %s response. Please create a new'
