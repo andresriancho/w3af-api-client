@@ -69,7 +69,10 @@ class Log(object):
         code, page = self.conn.send_request(url, method='GET')
 
         if code != 200:
-            raise APIException('Could not retrieve log entry list')
+            message = page.get('message', 'None')
+            args = (code, message)
+            raise APIException('Failed to retrieve scan log. Received HTTP'
+                               ' response code %s. Message: "%s"' % args)
 
         entries = page.get('entries', None)
 
@@ -87,7 +90,10 @@ class Log(object):
         code, page = self.conn.send_request(url, method='GET')
 
         if code != 200:
-            raise APIException('Could not retrieve log entry list')
+            message = page.get('message', 'None')
+            args = (code, message)
+            raise APIException('Failed to retrieve scan log. Received HTTP'
+                               ' response code %s. Message: "%s"' % args)
 
         entries = page.get('entries', None)
 
