@@ -36,6 +36,7 @@ class Connection(object):
         self.api_url = api_url
         self.session = None
         self.timeout = timeout
+        
         self.user = user
         self.password = password
         self.set_verbose(verbose)
