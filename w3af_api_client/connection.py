@@ -32,11 +32,13 @@ API_EXCEPTIONS = {400: BadRequestException,
 
 class Connection(object):
 
-    def __init__(self, api_url, verbose=False, timeout=5):
+    def __init__(self, api_url, user=None, password=None, verbose=False, timeout=5):
         self.api_url = api_url
         self.session = None
         self.timeout = timeout
-
+        
+        self.user = user
+        self.password = password
         self.set_verbose(verbose)
         self.configure_requests()
         self.can_access_api()
@@ -105,16 +107,16 @@ class Connection(object):
 
     def send_request(self, path, json_data=None, method='GET'):
         full_url = urlparse.urljoin(self.api_url, path)
-
+        auth = (self.user,self.password)
         if method == 'GET':
-            response = self.session.get(full_url, timeout=self.timeout)
+            response = self.session.get(full_url, auth=auth, timeout=self.timeout)
 
         elif method == 'DELETE':
-            response = self.session.delete(full_url, timeout=self.timeout)
+            response = self.session.delete(full_url, auth=auth, timeout=self.timeout)
 
         elif method == 'POST':
             data = json.dumps(json_data)
-            response = self.session.post(full_url, data=data,
+            response = self.session.post(full_url, data=data,auth=auth, 
                                          timeout=self.timeout)
 
         else:
