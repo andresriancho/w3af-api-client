@@ -32,13 +32,13 @@ API_EXCEPTIONS = {400: BadRequestException,
 
 class Connection(object):
 
-    def __init__(self, api_url, verbose=False, timeout=5):
+    def __init__(self, api_url, verbose=False, timeout=5, verify=True):
         self.api_url = api_url
         self.session = None
         self.timeout = timeout
 
         self.set_verbose(verbose)
-        self.configure_requests()
+        self.configure_requests(verify)
         self.can_access_api()
 
     def can_access_api(self):
@@ -95,8 +95,9 @@ class Connection(object):
 
         http_client.HTTPConnection.debuglevel = 1 if verbose else 0
 
-    def configure_requests(self):
+    def configure_requests(self, verify):
         self.session = requests.Session()
+        self.session.verify = verify
 
         headers = {'Content-Type': 'application/json',
                    'Accept': 'application/json',
