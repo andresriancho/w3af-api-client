@@ -1,4 +1,4 @@
-from w3af_api_client.utils.exceptions import APIException
+from ..utils.exceptions import APIException
 
 
 class Details(object):
