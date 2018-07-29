@@ -50,7 +50,7 @@ class TestW3afIntegration(unittest.TestCase):
 
         findings_list = scan.get_findings()
         self.assertGreaterEqual(len(findings_list), 4)
-        print('Got %s findings' % len(findings_list))
+        print(('Got %s findings' % len(findings_list)))
 
         finding = findings_list[0]
         self.assertIsInstance(finding, Finding)
@@ -79,7 +79,7 @@ class TestW3afIntegration(unittest.TestCase):
         Wait until the scan is in Running state
         :return: The HTTP response
         """
-        for _ in xrange(10):
+        for _ in range(10):
             time.sleep(0.5)
 
             status = scan.get_status()
@@ -93,7 +93,7 @@ class TestW3afIntegration(unittest.TestCase):
         Wait until the scan is in Stopped state
         :return: The HTTP response
         """
-        for _ in xrange(wait_loops):
+        for _ in range(wait_loops):
             time.sleep(0.5)
 
             status = scan.get_status()
