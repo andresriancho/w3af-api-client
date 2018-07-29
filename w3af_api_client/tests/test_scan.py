@@ -18,9 +18,9 @@ VERSION_RESPONSE = json.dumps({'version': '1.7.2'})
 
 SCAN_START_REQUEST = {'scan_profile': 'mock_profile',
                       'target_urls': [TARGET_URL]}
-SCAN_START_RESPONSE = json.dumps({u'message': u'Success',
-                                  u'href': u'/scans/0',
-                                  u'id': 0})
+SCAN_START_RESPONSE = json.dumps({'message': 'Success',
+                                  'href': '/scans/0',
+                                  'id': 0})
 
 # More fields are returned here, but I just want some to assert that the basics
 # are working

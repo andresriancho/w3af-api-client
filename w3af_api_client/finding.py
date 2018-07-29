@@ -1,5 +1,5 @@
-from w3af_api_client.utils.details import Details
-from w3af_api_client.traffic import Traffic
+from .utils.details import Details
+from .traffic import Traffic
 
 
 class Finding(Details):

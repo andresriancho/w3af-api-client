@@ -1,4 +1,4 @@
-from w3af_api_client.utils.details import Details
+from .utils.details import Details
 
 
 class ScannerException(Details):

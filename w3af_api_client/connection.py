@@ -1,5 +1,5 @@
 import requests
-import urlparse
+import urllib.parse
 import logging
 import json
 
@@ -11,13 +11,13 @@ try:
     import http.client as http_client
 except ImportError:
     # Python 2
-    import httplib as http_client
+    import http.client as http_client
 
 
-from w3af_api_client import __VERSION__
-from w3af_api_client.utils.constants import ISSUE_URL
-from w3af_api_client.scan import Scan
-from w3af_api_client.utils.exceptions import (APIException,
+from . import __VERSION__
+from .utils.constants import ISSUE_URL
+from .scan import Scan
+from .utils.exceptions import (APIException,
                                               ForbiddenException,
                                               NotFoundException,
                                               BadRequestException)
@@ -47,7 +47,7 @@ class Connection(object):
         """
         try:
             version_dict = self.get_version()
-        except Exception, e:
+        except Exception as e:
             msg = 'An exception was raised when connecting to REST API: "%s"'
             raise APIException(msg % e)
         else:
@@ -105,7 +105,7 @@ class Connection(object):
         self.session.headers.update(headers)
 
     def send_request(self, path, json_data=None, method='GET'):
-        full_url = urlparse.urljoin(self.api_url, path)
+        full_url = urllib.parse.urljoin(self.api_url, path)
 
         if method == 'GET':
             response = self.session.get(full_url, timeout=self.timeout)
