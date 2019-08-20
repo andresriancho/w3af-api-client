@@ -47,7 +47,7 @@ class Connection(object):
         """
         try:
             version_dict = self.get_version()
-        except Exception, e:
+        except Exception as e:
             msg = 'An exception was raised when connecting to REST API: "%s"'
             raise APIException(msg % e)
         else:
