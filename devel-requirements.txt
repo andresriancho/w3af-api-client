@@ -1,0 +1,10 @@
+-r requirements.txt
+
+responses
+pytest
+pytest-cov
+mock
+
+pylint
+flake8
+pep8

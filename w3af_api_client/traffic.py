@@ -16,8 +16,8 @@ class Traffic(object):
     def get_data(self):
         code, data = self.conn.send_request(self.traffic_href, method='GET')
 
-        self.request = base64.b64decode(data['request'])
-        self.response = base64.b64decode(data['response'])
+        self.request = base64.b64decode(data['request']).decode('utf-8')
+        self.response = base64.b64decode(data['response']).decode('utf-8')
 
     def get_request(self):
         return self.request

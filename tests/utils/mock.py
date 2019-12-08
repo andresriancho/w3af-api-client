@@ -1,3 +1,4 @@
+import w3af_api_client
 from w3af_api_client.finding import Finding
 from w3af_api_client.traffic import Traffic
 

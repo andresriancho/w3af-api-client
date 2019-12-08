@@ -1,9 +1,9 @@
 import json
-import httpretty
+import responses
 import base64
+from base import BaseAPITest
 
 from w3af_api_client.utils.exceptions import APIException
-from w3af_api_client.tests.base import BaseAPITest
 from w3af_api_client import Connection
 from w3af_api_client import LogEntry, Log
 from w3af_api_client import Scan
@@ -52,85 +52,86 @@ FINDINGS_DETAIL_RESPONSE = json.dumps({'name': 'SQL injection',
                                        'traffic_hrefs': ['/scans/0/traffic/45',
                                                          '/scans/0/traffic/46']})
 
-TRAFFIC_DETAIL_RESPONSE_45 = json.dumps({'request': base64.b64encode('GET / ...'),
-                                         'response': base64.b64encode('<html>...')})
-TRAFFIC_DETAIL_RESPONSE_46 = json.dumps({'request': base64.b64encode('POST / ...'),
-                                         'response': base64.b64encode('<html>...')})
+TRAFFIC_DETAIL_RESPONSE_45 = json.dumps({'request': base64.b64encode(b'GET /...').decode('utf-8'),
+                                         'response': base64.b64encode(b'<html>...').decode('utf-8')})
+TRAFFIC_DETAIL_RESPONSE_46 = json.dumps({'request': base64.b64encode(b'POST / ...').decode('utf-8'),
+                                         'response': base64.b64encode(b'<html>...').decode('utf-8')})
 
 
 class TestScanUsingClient(BaseAPITest):
 
-    @httpretty.activate
+    @responses.activate
     def test_simple_scan(self):
         #
         # Mock all HTTP responses
         #
-        httpretty.register_uri(httpretty.GET,
+        responses.add(responses.GET,
                                self.get_url('/'),
                                body=INDEX_RESPONSE,
                                content_type='application/json')
 
-        httpretty.register_uri(httpretty.GET,
+        responses.add(responses.GET,
                                self.get_url('/version'),
                                body=VERSION_RESPONSE,
                                content_type='application/json')
 
-        httpretty.register_uri(httpretty.POST,
+        responses.add(responses.POST,
                                self.get_url('/scans/'),
                                body=SCAN_START_RESPONSE,
                                content_type='application/json',
                                status=201)
 
-        httpretty.register_uri(httpretty.GET,
+        responses.add(responses.GET,
                                self.get_url('/scans/0/status'),
                                body=SCAN_STATUS_RESPONSE,
                                content_type='application/json')
 
-        httpretty.register_uri(httpretty.GET,
+        responses.add(responses.GET,
                                self.get_url('/scans/1/status'),
                                body=NOT_FOUND,
                                content_type='application/json',
                                status=404)
 
-        httpretty.register_uri(httpretty.GET,
+        responses.add(responses.GET,
                                self.get_url('/scans/0/log'),
-                               responses=[
-                                   #
-                                   #    Responses for ?page pagination
-                                   #
-                                   httpretty.Response(body=LOG_RESPONSE,
-                                                      content_type='application/json',
-                                                      status=200),
-                                   httpretty.Response(body=EMPTY_LOG_RESPONSE,
-                                                      content_type='application/json',
-                                                      status=200),
-                                   #
-                                   #    Responses for ?id=0 pagination
-                                   #
-                                   httpretty.Response(body=LOG_RESPONSE,
-                                                      content_type='application/json',
-                                                      status=200),
-                                   httpretty.Response(body=EMPTY_LOG_RESPONSE,
-                                                      content_type='application/json',
-                                                      status=200),
-                               ])
+                               body=LOG_RESPONSE,
+                               content_type='application/json',
+                               status=200)
 
-        httpretty.register_uri(httpretty.GET,
+        responses.add(responses.GET,
+                               self.get_url('/scans/0/log'),
+                               body=EMPTY_LOG_RESPONSE,
+                               content_type='application/json',
+                               status=200)
+
+        responses.add(responses.GET,
+                               self.get_url('/scans/0/log'),
+                               body=LOG_RESPONSE,
+                               content_type='application/json',
+                               status=200)
+
+        responses.add(responses.GET,
+                               self.get_url('/scans/0/log'),
+                               body=EMPTY_LOG_RESPONSE,
+                               content_type='application/json',
+                               status=200)
+
+        responses.add(responses.GET,
                                self.get_url('/scans/0/kb/'),
                                body=FINDINGS_RESPONSE,
                                content_type='application/json')
 
-        httpretty.register_uri(httpretty.GET,
+        responses.add(responses.GET,
                                self.get_url('/scans/0/kb/0'),
                                body=FINDINGS_DETAIL_RESPONSE,
                                content_type='application/json')
 
-        httpretty.register_uri(httpretty.GET,
+        responses.add(responses.GET,
                                self.get_url('/scans/0/traffic/45'),
                                body=TRAFFIC_DETAIL_RESPONSE_45,
                                content_type='application/json')
 
-        httpretty.register_uri(httpretty.GET,
+        responses.add(responses.GET,
                                self.get_url('/scans/0/traffic/46'),
                                body=TRAFFIC_DETAIL_RESPONSE_46,
                                content_type='application/json')
@@ -148,7 +149,7 @@ class TestScanUsingClient(BaseAPITest):
 
         scan.start('mock_profile', [TARGET_URL])
 
-        self.assertJSONEquals(httpretty.last_request(), SCAN_START_REQUEST)
+        self.assertJSONEquals(responses.calls[-1].request, SCAN_START_REQUEST)
         self.assertEqual(scan.scan_id, 0)
 
         #
