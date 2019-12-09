@@ -5,10 +5,12 @@ Implements the Distutils 'upload' subcommand (upload package to PyPI)."""
 import os
 import socket
 import platform
-from urllib2 import urlopen, Request, HTTPError
+from urllib.request import urlopen, Request
+from urllib.error import HTTPError
 from base64 import standard_b64encode
-import urlparse
-import cStringIO as StringIO
+
+from io import BytesIO
+from requests.utils import urlparse
 from hashlib import md5
 
 from distutils.errors import DistutilsError, DistutilsOptionError
@@ -64,7 +66,7 @@ class upload(PyPIRCCommand):
     def upload_file(self, command, pyversion, filename):
         # Makes sure the repository URL is compliant
         schema, netloc, url, params, query, fragments = \
-            urlparse.urlparse(self.repository)
+            urlparse(self.repository)
         if params or query or fragments:
             raise AssertionError("Incompatible url %s" % self.repository)
 
@@ -140,7 +142,7 @@ class upload(PyPIRCCommand):
         boundary = '--------------GHSKFJDLGDS7543FJKLFHRE75642756743254'
         sep_boundary = '\n--' + boundary
         end_boundary = sep_boundary + '--'
-        body = StringIO.StringIO()
+        body = BytesIO()
         for key, value in data.items():
             # handle multiple entries for the same name
             if not isinstance(value, list):
@@ -181,10 +183,10 @@ class upload(PyPIRCCommand):
             if self.show_response:
                 msg = '\n'.join(('-' * 75, result.read(), '-' * 75))
                 self.announce(msg, log.INFO)
-        except socket.error, e:
+        except socket.error as e:
             self.announce(str(e), log.ERROR)
             raise
-        except HTTPError, e:
+        except HTTPError as e:
             status = e.code
             reason = e.msg
 

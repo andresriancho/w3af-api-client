@@ -1,15 +1,16 @@
 import requests
-import urlparse
 import logging
 import json
+import six
+from requests.compat import urljoin
 
 # These two lines enable debugging at httplib level
 # (requests->urllib3->http.client) You will see the REQUEST, including HEADERS
 # and DATA, and RESPONSE with HEADERS but without DATA.
 # The only thing missing will be the response.body which is not logged.
-try:
+if six.PY3:
     import http.client as http_client
-except ImportError:
+else:
     # Python 2
     import httplib as http_client
 
@@ -105,7 +106,7 @@ class Connection(object):
         self.session.headers.update(headers)
 
     def send_request(self, path, json_data=None, method='GET'):
-        full_url = urlparse.urljoin(self.api_url, path)
+        full_url = urljoin(self.api_url, path)
 
         if method == 'GET':
             response = self.session.get(full_url, timeout=self.timeout)

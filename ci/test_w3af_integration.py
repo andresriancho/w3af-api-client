@@ -2,6 +2,7 @@ import unittest
 import socket
 import time
 
+from builtins import range
 from w3af_api_client import Connection, Scan, Log, LogEntry, Finding
 from ci.constants import FAST_TEST_PROFILE
 
@@ -79,7 +80,7 @@ class TestW3afIntegration(unittest.TestCase):
         Wait until the scan is in Running state
         :return: The HTTP response
         """
-        for _ in xrange(10):
+        for _ in range(10):
             time.sleep(0.5)
 
             status = scan.get_status()
@@ -93,7 +94,7 @@ class TestW3afIntegration(unittest.TestCase):
         Wait until the scan is in Stopped state
         :return: The HTTP response
         """
-        for _ in xrange(wait_loops):
+        for _ in range(wait_loops):
             time.sleep(0.5)
 
             status = scan.get_status()

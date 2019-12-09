@@ -1,6 +1,7 @@
 import time
 import base64
 import logging
+from builtins import range
 
 from w3af_api_client.log import Log
 from w3af_api_client.finding import Finding
@@ -80,7 +81,7 @@ class Scan(object):
         #
         self.stop()
 
-        for _ in xrange(timeout):
+        for _ in range(timeout):
             time.sleep(1)
 
             is_running = self.get_status()['is_running']
@@ -155,7 +156,7 @@ class Scan(object):
         if encoded_fuzzable_requests is None:
             raise APIException('Failed to retrieve fuzzable requests')
 
-        return [base64.b64decode(fr) for fr in encoded_fuzzable_requests]
+        return [base64.b64decode(fr).decode('utf-8') for fr in encoded_fuzzable_requests]
 
     def __repr__(self):
         return '<Scan with ID "%s">' % self.scan_id

@@ -1,9 +1,9 @@
 import json
-import httpretty
+import responses
+from base import BaseAPITest
+from test_scan import INDEX_RESPONSE, VERSION_RESPONSE
 
-from w3af_api_client import Connection, Scan
-from w3af_api_client.tests.base import BaseAPITest
-from w3af_api_client.tests.test_scan import INDEX_RESPONSE, VERSION_RESPONSE
+from w3af_api_client.connection import Connection, Scan
 
 
 EXCEPTION_LIST_RESPONSE = json.dumps({'items': [{'id': 0,
@@ -44,29 +44,29 @@ EXCEPTION_DETAIL_1 = json.dumps({'id': 1,
 
 class TestExceptionListClient(BaseAPITest):
 
-    @httpretty.activate
+    @responses.activate
     def test_exception_list(self):
-        httpretty.register_uri(httpretty.GET,
+        responses.add(responses.GET,
                                self.get_url('/'),
                                body=INDEX_RESPONSE,
                                content_type='application/json')
 
-        httpretty.register_uri(httpretty.GET,
+        responses.add(responses.GET,
                                self.get_url('/version'),
                                body=VERSION_RESPONSE,
                                content_type='application/json')
 
-        httpretty.register_uri(httpretty.GET,
+        responses.add(responses.GET,
                                self.get_url('/scans/0/exceptions/'),
                                body=EXCEPTION_LIST_RESPONSE,
                                content_type='application/json')
 
-        httpretty.register_uri(httpretty.GET,
+        responses.add(responses.GET,
                                self.get_url('/scans/0/exceptions/0'),
                                body=EXCEPTION_DETAIL_0,
                                content_type='application/json')
 
-        httpretty.register_uri(httpretty.GET,
+        responses.add(responses.GET,
                                self.get_url('/scans/0/exceptions/1'),
                                body=EXCEPTION_DETAIL_1,
                                content_type='application/json')
