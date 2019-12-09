@@ -2,6 +2,6 @@
 # These requirements are only needed for dev/testing, the user requirements
 # are in setup.py
 #
-future
-requests
-six
+future==0.18.2
+requests==2.22.0
+six==1.13.0
