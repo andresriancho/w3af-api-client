@@ -1,4 +1,4 @@
-__VERSION__ = '1.1.7'
+__VERSION__ = '3.0.1'
 
 from w3af_api_client.connection import Connection
 from w3af_api_client.finding import Finding
