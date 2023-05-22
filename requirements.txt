@@ -3,5 +3,5 @@
 # are in setup.py
 #
 future==0.18.2
-requests==2.22.0
+requests==2.31.0
 six==1.13.0
